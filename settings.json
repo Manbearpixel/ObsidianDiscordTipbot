@@ -1,0 +1,7 @@
+{
+  "txFee": 0.001,
+  "minSend": 0,
+  "timeToRefreshTxs": 1,
+  "txStaleConfirmations": 3,
+  "timeToRefreshNotifications": 3
+}

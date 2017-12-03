@@ -1,0 +1,17 @@
+{
+  "name": "odn-tipbot",
+  "version": "1.0.0",
+  "description": "Discord Tipbot for Obsidian",
+  "main": "discord.js",
+  "dependencies": {
+    "bitcoin-core": "^2.0.0",
+    "discord.js": "^11.2.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node discord.js"
+  },
+  "author": "",
+  "license": "ISC"
+}
