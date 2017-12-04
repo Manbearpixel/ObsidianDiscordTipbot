@@ -69,6 +69,7 @@ client.on("message", async message => {
 
   if(command === 'tip') {
     let request = args[0];
+    console.log(request);
 
     if (request === 'deposit') {
       console.log('!!! Tip.Deposit !!!');
@@ -142,6 +143,98 @@ client.on("message", async message => {
       } catch (err) {
         console.log(err);
         message.channel.send(Tipbot.errorMessage('Unable to withdraw ODN from your balance at this time.'));
+      }
+    }
+    else if (request === 'party') {
+      console.log('!!! Tip.party !!!');
+      let [request, amount] = args;
+      if (config.hasOwnProperty('party') && config.party === true) {
+        try {
+          let memberID = message.member.user.id;
+          console.log(`member::${memberID}`);
+
+          if (memberID !== config.adminId) {
+            message.channel.send('beep boop Party mode can only be done by the party masters');
+          }
+          else {
+            let members = message.channel.members.array().filter((member) => {
+              return !!(!member.user.bot && member.id !== memberID);
+            });
+
+            console.log(`people here: ${members.length}`);
+            console.log(`tip amount: ${amount}`);
+
+            if (members.length === 0) {
+              message.channel.send('beep boop -- Party cancelled, no one eligible!');
+            }
+            else {
+              message.channel.send('beep boop -- Ignite the rocket to start the party!').then(questionMessage => {
+
+                let collector = questionMessage.createReactionCollector(
+                  (reaction, user) => {
+                    console.log('---party validation---');
+                    return !!(reaction.emoji.name === '🚀' && user.id === config.adminId)
+                  }
+                );
+
+                collector.on('collect', (ele, collect) => {
+                  console.log('---party validated---');
+                  Tipbot.getOdnBalance(memberID)
+                  .then((Balance) => {
+                    let minOdn  = parseInt(members.length * parseInt(amount));
+                    let minFees = parseFloat(members.length * parseFloat(settings.txFee));
+                    let minBalance = (minOdn + minFees);
+                    console.log(`---min ODN for party: ${minBalance}---\nODN: ${minOdn}\nFees:${minFees}`);
+
+                    if (Balance < minBalance) {
+                      message.channel.send(`not enough fuel! Party aborted. Requires ${minBalance} ODN`);
+                    }
+                    else {
+                      message.channel.send('Starting the party!!!');
+
+                      for (member of members) {
+                        console.log(`sending party to ${member.id}`);
+
+                        Tipbot.getOdnAddress(member.id)
+                        .then((Address) => {
+                          Tipbot.withdrawOdn(memberId, Address, amount)
+                          .then((Status) => {
+                            console.log('...Tip Party STATUS', Status);
+                            if (Status.status == 'success') {
+                              member.createDM()
+                              .then((DMChannel) => {
+                                DMChannel.send(`beep-boop ODN Tipbot here! You're going to be receiving ${amount} ODN for the Obsidian Tipbot party!`);
+                              });
+                            }
+                            else {
+                              console.log(`ERR occurred, unable to send ODN to member:${member.id}\n${Status.message}`);
+                              message.channel.send(`Unable to share the party with <@${member.id}>`);
+                            }
+                          })
+                          .catch((err) => {
+                            console.log(`ERR occurred, unable to send ODN to member:${member.id}\n${Status.message}`);
+                            message.channel.send(`Unable to share the party with <@${member.id}>`);
+                          });
+                        })
+                        .catch((err) => {
+                          console.log(`ERR occurred, unable to send ODN to member:${member.id}`);
+                          message.channel.send(`Unable to share the party with <@${member.id}>`);
+                        })
+                      }
+                    }
+                  });
+                });
+              });
+            }
+          }
+        }
+        catch (err) {
+          console.log(err);
+          message.channel.send(Tipbot.errorMessage('Unable to start the party.'));
+        }
+      }
+      else {
+        message.channel.send('beep boop Party mode is not active!');
       }
     }
     else {
