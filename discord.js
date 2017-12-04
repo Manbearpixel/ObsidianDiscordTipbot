@@ -267,7 +267,7 @@ client.on("message", async message => {
           .then((Status) => {
             console.log('...Withdraw STATUS', Status);
             if (Status.status == 'success') {
-              message.channel.send(`Successfully sent <@${discordUserID}> ${amount} ODN from <@${memberID}>\n\nThe transaction should appear on the blockchain within the next few minutes:\n${settings.blockexplorerUrl}/transaction/${Status.message}`);
+              message.channel.send(`Successfully sent <@${discordUserID}> ${amount} ODN from <@${memberID}>\n\nThe transaction should appear on the blockchain within the next few minutes:\n${settings.blockexplorerUrl}transaction/${Status.message}`);
             }
             else {
               message.channel.send(`Could not complete tip -- ${Status.message}`);
