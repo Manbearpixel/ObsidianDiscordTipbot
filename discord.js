@@ -197,7 +197,8 @@ client.on("message", async message => {
 
                         Tipbot.getOdnAddress(member.id)
                         .then((Address) => {
-                          Tipbot.withdrawOdn(memberId, Address, amount)
+
+                          Tipbot.withdrawOdn(memberID, Address, amount)
                           .then((Status) => {
                             console.log('...Tip Party STATUS', Status);
                             if (Status.status == 'success') {
