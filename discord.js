@@ -84,7 +84,7 @@ client.on("message", async message => {
     let userId    = message.author.id;
 
     if (request === 'deposit') {
-      console.log('!!! Tip.Deposit !!!');
+      console.log('\n!!! Tip.Deposit !!!');
       try {
         console.log(`member::${userId} -- ${message.member.displayName}`);
         Tipbot.getOdnAddress(userId)
@@ -107,7 +107,7 @@ client.on("message", async message => {
       }
     }
     else if (request === 'balance') {
-      console.log('!!! Tip.Balance !!!');
+      console.log('\n!!! Tip.Balance !!!');
       try {
         console.log(`member::${userId} -- ${message.member.displayName}`);
         Tipbot.getOdnAddress(userId)
@@ -133,7 +133,7 @@ client.on("message", async message => {
       }
     }
     else if (request === 'withdraw') {
-      console.log('!!! Tip.Withdraw !!!');
+      console.log('\n!!! Tip.Withdraw !!!');
       let [request, odnAddress, amount] = args;
       try {
         console.log(`member::${userId} -- ${message.member.displayName}`);
@@ -157,7 +157,7 @@ client.on("message", async message => {
       }
     }
     else if (request === 'party') {
-      console.log('!!! Tip.party !!!');
+      console.log('\n!!! Tip.party !!!');
       let [request, amount] = args;
       if (config.hasOwnProperty('party') && config.party === true) {
         try {
@@ -272,7 +272,7 @@ client.on("message", async message => {
       }
     }
     else {
-      console.log('!!! Tip !!!');
+      console.log('\n!!! Tip !!!');
 
       try {
         let amount        = parseFloat(args[1]);
