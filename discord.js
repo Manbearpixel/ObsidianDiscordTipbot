@@ -139,7 +139,6 @@ client.on("message", async message => {
         console.log(`member::${userId} -- ${message.member.displayName}`);
         Tipbot.withdrawOdn(userId, odnAddress, amount)
         .then((Status) => {
-          console.log(Inspect(Status, {showHidden: false, depth: null}));
           if (Status.status == 'success') {
             message.channel.send(`<@${userId}> Successfully withdrew ${amount} ODN from your Tipbot wallet.\n\nThe transaction should appear on the blockchain within the next few minutes:\n${settings.blockexplorerUrl}transaction/${Status.message}`);
           }
