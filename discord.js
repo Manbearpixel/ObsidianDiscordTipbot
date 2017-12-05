@@ -110,7 +110,7 @@ client.on("message", async message => {
     else if (request === 'balance') {
       console.log('\n!!! Tip.Balance !!!');
       try {
-        console.log(`member::${userId} -- ${message.member.userName}`);
+        console.log(`member::${userId} -- ${userName}`);
         Tipbot.getOdnAddress(userId)
         .then((Address) => {
           console.log(`--address::${Address}`);
