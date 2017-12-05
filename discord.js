@@ -213,7 +213,6 @@ client.on("message", async message => {
                           console.log(`-address::${Address}`);
                           Tipbot.withdrawOdn(memberID, Address, amount)
                           .then((Status) => {
-                            console.log(Inspect(Status, {showHidden: false, depth: null}));
                             if (Status.status == 'success') {
                               member.createDM()
                               .then((DMChannel) => {
