@@ -287,7 +287,7 @@ client.on("message", async message => {
           throw new Error('You cannot tip yourself!');
         }
 
-        console.log(`memberID :: ${userId}`);
+        console.log(`userId :: ${userId}`);
         console.log(`discordUserID :: ${discordUserID}`);
         console.log(`amount :: ${amount}`);
         console.log(`comment :: ${comment}`);
@@ -296,7 +296,7 @@ client.on("message", async message => {
         .then((RecipientOdnAddress) => {
           console.log(`attempting to send tip to ${RecipientOdnAddress}`)
 
-          Tipbot.withdrawOdn(memberID, RecipientOdnAddress, amount)
+          Tipbot.withdrawOdn(userId, RecipientOdnAddress, amount)
           .then((Status) => {
             console.log('...Withdraw STATUS', Status);
             if (Status.status == 'success') {
