@@ -82,11 +82,12 @@ client.on("message", async message => {
   if(command === 'tip') {
     let request   = args[0];
     let userId    = message.author.id;
+    let userName  = message.author.username;
 
     if (request === 'deposit') {
       console.log('\n!!! Tip.Deposit !!!');
       try {
-        console.log(`member::${userId} -- ${message.member.displayName}`);
+        console.log(`member::${userId} -- ${userName}`);
         Tipbot.getOdnAddress(userId)
         .then((Address) => {
           console.log(`--address::${Address}`);
@@ -109,7 +110,7 @@ client.on("message", async message => {
     else if (request === 'balance') {
       console.log('\n!!! Tip.Balance !!!');
       try {
-        console.log(`member::${userId} -- ${message.member.displayName}`);
+        console.log(`member::${userId} -- ${message.member.userName}`);
         Tipbot.getOdnAddress(userId)
         .then((Address) => {
           console.log(`--address::${Address}`);
@@ -136,7 +137,7 @@ client.on("message", async message => {
       console.log('\n!!! Tip.Withdraw !!!');
       let [request, odnAddress, amount] = args;
       try {
-        console.log(`member::${userId} -- ${message.member.displayName}`);
+        console.log(`member::${userId} -- ${userName}`);
         Tipbot.withdrawOdn(userId, odnAddress, amount)
         .then((Status) => {
           if (Status.status == 'success') {
@@ -160,7 +161,7 @@ client.on("message", async message => {
       let [request, amount] = args;
       if (config.hasOwnProperty('party') && config.party === true) {
         try {
-          console.log(`member::${userId} -- ${message.member.displayName}`);
+          console.log(`member::${userId} -- ${userName}`);
 
           if (userId !== config.adminId) {
             message.channel.send('beep boop -- Party mode can only be setup by the party masters!');
@@ -202,7 +203,7 @@ client.on("message", async message => {
                       message.channel.send('beep-boop -- Starting the party!!!');
 
                       Async.eachOf(members, (member, key, callback) => {
-                        console.log(`---Party with: ${member.displayName}`);
+                        console.log(`---Party with: ${userName}`);
                         Tipbot.getOdnAddress(member.id)
                         .then((Address) => {
                           console.log(`-address::${Address}`);
