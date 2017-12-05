@@ -86,11 +86,11 @@ client.on("message", async message => {
     if (request === 'deposit') {
       console.log('!!! Tip.Deposit !!!');
       try {
-        let memberID = message.member.user.id;
-        console.log(`member::${memberID}`);
+        let memberID = message.member.id;
+        console.log(`member::${memberID} -- ${message.member.displayName}`);
         Tipbot.getOdnAddress(memberID)
         .then((Address) => {
-          console.log(`address::`, Address);
+          console.log(`--address::${Address}`);
           if (Address !== null) {
             message.channel.send(`<@${memberID}> ${Tipbot.depositMessage(Address)}`);
           }
@@ -110,12 +110,14 @@ client.on("message", async message => {
     else if (request === 'balance') {
       console.log('!!! Tip.Balance !!!');
       try {
-        let memberID = message.member.user.id;
-        console.log(`member::${memberID}`);
+        let memberID = message.member.id;
+        console.log(`member::${memberID} -- ${message.member.displayName}`);
         Tipbot.getOdnAddress(memberID)
         .then((Address) => {
+          console.log(`--address::${Address}`);
           Tipbot.getOdnBalance(memberID)
           .then((Balance) => {
+            console.log(`--balance::${Balance}`);
             message.channel.send(`<@${memberID}> ${Tipbot.balanceMessage(Address, Balance)}`);
           })
           .catch((err) => {
@@ -136,11 +138,11 @@ client.on("message", async message => {
       console.log('!!! Tip.Withdraw !!!');
       let [request, odnAddress, amount] = args;
       try {
-        let memberID = message.member.user.id;
-        console.log(`member::${memberID}`);
+        let memberID = message.member.id;
+        console.log(`member::${memberID} -- ${message.member.displayName}`);
         Tipbot.withdrawOdn(memberID, odnAddress, amount)
         .then((Status) => {
-          console.log('...Withdraw STATUS', Status);
+          console.log(Inspect(Status, {showHidden: false, depth: null}));
           if (Status.status == 'success') {
             message.channel.send(`<@${memberID}> Successfully withdrew ${amount} ODN from your Tipbot wallet.\n\nThe transaction should appear on the blockchain within the next few minutes:\n${settings.blockexplorerUrl}transaction/${Status.message}`);
           }
@@ -162,19 +164,19 @@ client.on("message", async message => {
       let [request, amount] = args;
       if (config.hasOwnProperty('party') && config.party === true) {
         try {
-          let memberID = message.member.user.id;
-          console.log(`member::${memberID}`);
+          let memberID = message.member.id;
+          console.log(`member::${memberID} -- ${message.member.displayName}`);
 
           if (memberID !== config.adminId) {
-            message.channel.send('beep boop Party mode can only be done by the party masters');
+            message.channel.send('beep boop -- Party mode can only be setup by the party masters!');
           }
           else {
             let members = message.channel.members.array().filter((member) => {
               return !!(!member.user.bot && member.id !== memberID);
             });
 
-            console.log(`people here: ${members.length}`);
-            console.log(`tip amount: ${amount}`);
+            console.log(`--Party Head-count:: ${members.length}`);
+            console.log(`--Party Tip: ${amount}/ea`);
 
             if (members.length === 0) {
               message.channel.send('beep boop -- Party cancelled, no one eligible!');
@@ -184,42 +186,41 @@ client.on("message", async message => {
 
                 let collector = questionMessage.createReactionCollector(
                   (reaction, user) => {
-                    console.log('---party validation---');
                     return !!(reaction.emoji.name === '🚀' && user.id === config.adminId)
                   }
                 );
 
                 collector.on('collect', (ele, collect) => {
-                  console.log('---party validated---');
+                  console.log('---PARTY VALIDATED---');
                   Tipbot.getOdnBalance(memberID)
                   .then((Balance) => {
                     let minOdn  = parseInt(members.length * parseInt(amount));
                     let minFees = parseFloat(members.length * parseFloat(settings.txFee));
                     let minBalance = (minOdn + minFees);
-                    console.log(`---min ODN for party: ${minBalance}---\nODN: ${minOdn}\nFees:${minFees}`);
+                    console.log(`---Party ODN required: ${minBalance}\n---ODN: ${minOdn}\n---Fees:${minFees}`);
 
                     if (Balance < minBalance) {
-                      message.channel.send(`not enough fuel! Party aborted. Requires ${minBalance} ODN`);
+                      message.channel.send(`beep-boop -- Not enough fuel! Party aborted! Requires ${minBalance} ODN`);
                     }
                     else {
-                      message.channel.send('Starting the party!!!');
+                      message.channel.send('beep-boop -- Starting the party!!!');
 
                       Async.eachOf(members, (member, key, callback) => {
-                        console.log(`Party for -- ${member.displayName}`);
+                        console.log(`---Party with: ${member.displayName}`);
                         Tipbot.getOdnAddress(member.id)
                         .then((Address) => {
-                          console.log(`--address::${Address}`);
+                          console.log(`-address::${Address}`);
                           Tipbot.withdrawOdn(memberID, Address, amount)
                           .then((Status) => {
-                            console.log(`--withdraw/tip attempt ${Status}`);
+                            console.log(Inspect(Status, {showHidden: false, depth: null}));
                             if (Status.status == 'success') {
                               member.createDM()
                               .then((DMChannel) => {
-                                console.log('--send DM');
-                                // DMChannel.send(`beep-boop ODN Tipbot here! You're going to be receiving ${amount} ODN for the Obsidian Tipbot party!`)
-                                // .then((message) => {
-                                //   console.log(`sent message to ${member.id}`);
-                                // })
+                                console.log('-send DM');
+                                DMChannel.send(`beep-boop -- ODN Tipbot here! You're going to be receiving ${amount} ODN for the Obsidian Tipbot party, enjoy!`)
+                                .then((message) => {
+                                  console.log(`-DM sent`);
+                                });
                                 callback();
                               });
                             }
@@ -229,8 +230,6 @@ client.on("message", async message => {
                               message.channel.send(`Unable to share the party with <@${member.id}>`);
                               callback(new Error('BAD WITHDRAW'));
                             }
-
-
                           })
                           .catch((err) => {
                             console.log(`ERR occurred, unable to send ODN to member:${member.id}\n${Status.message}`);
@@ -250,9 +249,10 @@ client.on("message", async message => {
 
 
                       }, (err) => {
-                        console.log('error?');
-                        console.log(err.messag);
-                        console.log('----');
+                        if (err) {
+                          console.log('error?');
+                          console.log(err);
+                        }
                         console.log('finished!');
                       });
                     }
