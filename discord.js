@@ -220,8 +220,12 @@ client.on("message", async message => {
                                 DMChannel.send(`beep-boop -- ODN Tipbot here! You're going to be receiving ${amount} ODN for the Obsidian Tipbot party, enjoy!`)
                                 .then((message) => {
                                   console.log(`-DM sent`);
+                                  callback();
+                                })
+                                .catch((err) => {
+                                  console.log(`-DM FAILED for ${member.id} // ${member.displayName}`);
+                                  callback();
                                 });
-                                callback();
                               });
                             }
                             else {
@@ -268,7 +272,7 @@ client.on("message", async message => {
         }
       }
       else {
-        message.channel.send('beep boop Party mode is not active!');
+        message.channel.send('beep boop -- Tipbot Party mode is not enabled!');
       }
     }
     else {
