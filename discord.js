@@ -175,34 +175,35 @@ client.on("message", async message => {
               return !!(!member.user.bot && member.id !== memberID);
             });
 
+            let minOdn  = parseInt(members.length * parseInt(amount));
+            let minFees = parseFloat(members.length * parseFloat(settings.txFee));
+            let minBalance = (minOdn + minFees);
+
             console.log(`--Party Head-count:: ${members.length}`);
             console.log(`--Party Tip: ${amount}/ea`);
+            console.log(`--Party ODN required: ${minBalance} (${minOdn} + ${minFees})`);
 
             if (members.length === 0) {
               message.channel.send('beep boop -- Party cancelled, no one eligible!');
             }
             else {
-              message.channel.send('beep boop -- Ignite the rocket to start the party!').then(questionMessage => {
+              Tipbot.getOdnBalance(memberID)
+              .then((Balance) => {
 
-                let collector = questionMessage.createReactionCollector(
-                  (reaction, user) => {
-                    return !!(reaction.emoji.name === '🚀' && user.id === config.adminId)
-                  }
-                );
+                if (Balance < minBalance) {
+                  message.channel.send(`beep-boop -- Not enough fuel! Party aborted! Requires ${minBalance} ODN`);
+                }
+                else {
+                  message.channel.send('beep boop -- Ignite the rocket to start the party!').then(questionMessage => {
+                    let collector = questionMessage.createReactionCollector(
+                      (reaction, user) => {
+                        return !!(reaction.emoji.name === '🚀' && user.id === config.adminId)
+                      }
+                    );
 
-                collector.on('collect', (ele, collect) => {
-                  console.log('---PARTY VALIDATED---');
-                  Tipbot.getOdnBalance(memberID)
-                  .then((Balance) => {
-                    let minOdn  = parseInt(members.length * parseInt(amount));
-                    let minFees = parseFloat(members.length * parseFloat(settings.txFee));
-                    let minBalance = (minOdn + minFees);
-                    console.log(`---Party ODN required: ${minBalance}\n---ODN: ${minOdn}\n---Fees:${minFees}`);
+                    collector.on('collect', (ele, collect) => {
+                      console.log('---PARTY VALIDATED---');
 
-                    if (Balance < minBalance) {
-                      message.channel.send(`beep-boop -- Not enough fuel! Party aborted! Requires ${minBalance} ODN`);
-                    }
-                    else {
                       message.channel.send('beep-boop -- Starting the party!!!');
 
                       Async.eachOf(members, (member, key, callback) => {
@@ -255,9 +256,9 @@ client.on("message", async message => {
                         }
                         console.log('finished!');
                       });
-                    }
+                    });
                   });
-                });
+                }
               });
             }
           }
