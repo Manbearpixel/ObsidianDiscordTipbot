@@ -2,6 +2,7 @@
 const Discord = require("discord.js");
 const Tipbot  = require('./lib/tipbot');
 const Notifications = require('./lib/notifications');
+const Async = require('async');
 
 // This is your client. Some people call it `bot`, some people call it `self`,
 // some might call it `cootchie`. Either way, when you see `client.something`, or `bot.something`,
@@ -19,7 +20,7 @@ client.on("ready", () => {
   console.log(`Bot has started, with ${client.users.size} users, in ${client.channels.size} channels of ${client.guilds.size} guilds.`);
   // Example of changing the bot's playing game to something useful. `client.user` is what the
   // docs refer to as the "ClientUser".
-  
+
   client.user.setGame(`. Type !help for Tipbot`);
   if (settings.hasOwnProperty('notifications') && settings.notifications === true) {
     Notifications.setupNotifications(client);
@@ -29,7 +30,15 @@ client.on("ready", () => {
 client.on("guildCreate", guild => {
   // This event triggers when the bot joins a guild.
   console.log(`New guild joined: ${guild.name} (id: ${guild.id}). This guild has ${guild.memberCount} members!`);
-  client.user.setGame(`on ${client.guilds.size} servers`);
+
+  let channels = guild.channels.array();
+  for (let channel of channels) {
+    if (channel.name === 'general') {
+      channel.send('beep-boop -- Glad to be around everyone! Please type \`!help\` for Tipbot commands.');
+    }
+  }
+
+  client.user.setGame(`. Type !help for Tipbot`);
 });
 
 client.on("guildDelete", guild => {
@@ -133,7 +142,7 @@ client.on("message", async message => {
         .then((Status) => {
           console.log('...Withdraw STATUS', Status);
           if (Status.status == 'success') {
-            message.channel.send('Success!');
+            message.channel.send(`<@${memberID}> Successfully withdrew ${amount} ODN from your Tipbot wallet.\n\nThe transaction should appear on the blockchain within the next few minutes:\n${settings.blockexplorerUrl}transaction/${Status.message}`);
           }
           else {
             message.channel.send(`Could not complete withdraw -- ${Status.message}`);
@@ -195,36 +204,57 @@ client.on("message", async message => {
                     else {
                       message.channel.send('Starting the party!!!');
 
-                      for (member of members) {
-                        console.log(`sending party to ${member.id}`);
-
+                      Async.eachOf(members, (member, key, callback) => {
+                        console.log(`Party for -- ${member.displayName}`);
                         Tipbot.getOdnAddress(member.id)
                         .then((Address) => {
-
+                          console.log(`--address::${Address}`);
                           Tipbot.withdrawOdn(memberID, Address, amount)
                           .then((Status) => {
-                            console.log('...Tip Party STATUS', Status);
+                            console.log(`--withdraw/tip attempt ${Status}`);
                             if (Status.status == 'success') {
                               member.createDM()
                               .then((DMChannel) => {
-                                DMChannel.send(`beep-boop ODN Tipbot here! You're going to be receiving ${amount} ODN for the Obsidian Tipbot party!`);
+                                console.log('--send DM');
+                                // DMChannel.send(`beep-boop ODN Tipbot here! You're going to be receiving ${amount} ODN for the Obsidian Tipbot party!`)
+                                // .then((message) => {
+                                //   console.log(`sent message to ${member.id}`);
+                                // })
+                                callback();
                               });
                             }
                             else {
                               console.log(`ERR occurred, unable to send ODN to member:${member.id}\n${Status.message}`);
+
                               message.channel.send(`Unable to share the party with <@${member.id}>`);
+                              callback(new Error('BAD WITHDRAW'));
                             }
+
+
                           })
                           .catch((err) => {
                             console.log(`ERR occurred, unable to send ODN to member:${member.id}\n${Status.message}`);
+
                             message.channel.send(`Unable to share the party with <@${member.id}>`);
+
+                            callback(err);
                           });
                         })
                         .catch((err) => {
                           console.log(`ERR occurred, unable to send ODN to member:${member.id}`);
+
                           message.channel.send(`Unable to share the party with <@${member.id}>`);
+
+                          callback(err);
                         })
-                      }
+
+
+                      }, (err) => {
+                        console.log('error?');
+                        console.log(err.messag);
+                        console.log('----');
+                        console.log('finished!');
+                      });
                     }
                   });
                 });
