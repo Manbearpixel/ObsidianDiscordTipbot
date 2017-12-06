@@ -242,7 +242,7 @@ client.on("message", async message => {
                       };
 
                       Async.mapSeries(members, (member, callback) => {
-                        console.log(`---Party with: ${userName}`);
+                        console.log(`---Party with: ${member.user.username}`);
                         Tipbot.getOdnAddress(member.id)
                         .then((Address) => {
                           console.log(`-address::${Address}`);
@@ -256,7 +256,7 @@ client.on("message", async message => {
                                 .then((message) => {
                                   console.log(`-DM sent`);
                                   setTimeout(()=> {
-                                    console.log('-next');
+                                    console.log('-next\n');
                                     callback();
                                   }, 700);
                                 })
@@ -290,11 +290,12 @@ client.on("message", async message => {
                         })
                       }, (err, res) => {
                         if (err) {
-                          console.log('error?');
+                          console.log('!! Tip.Party Err !!');
                           console.log(err);
                         }
-                        console.log('finished!');
-                        console.log(JSON.stringify(res));
+
+                        console.log('!! Tip.Party Complete !!');
+                        // console.log(JSON.stringify(res));
                       });
                     });
                   });
