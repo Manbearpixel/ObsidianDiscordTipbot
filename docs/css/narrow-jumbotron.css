@@ -1,0 +1,191 @@
+/* Space out content a bit */
+body {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  font-family: 'Source Sans Pro', Verdana, Geneva, sans-serif;
+  font-weight: 300;
+  font-size: 16px;
+}
+
+strong {
+  font-weight: 600;
+}
+
+blockquote {
+  border-left: none;
+}
+
+.electrolize {
+  font-family: 'Electrolize', Arial, Helvetica, sans-serif;
+}
+
+.slide-and-fadein {
+  -webkit-animation: slide-and-fadein 1s linear forwards;
+     -moz-animation: slide-and-fadein 1s linear forwards;
+       -o-animation: slide-and-fadein 1s linear forwards;
+          animation: slide-and-fadein 1s linear forwards;
+}
+
+.btn {
+  font-weight: 300;
+}
+
+.marketing,
+.features,
+.usage,
+.setup {
+  margin-bottom: 40px;
+  padding: 0 10px;
+}
+
+.marketing > div:first-of-type,
+.features > div:first-of-type,
+.usage > div:first-of-type,
+.setup > div:first-of-type {
+  margin-left: -10px;
+}
+
+/* Everything but the jumbotron gets side spacing for mobile first views */
+.header,
+.footer {
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+/* Custom page header */
+.header {
+  padding-bottom: 20px;
+  border-bottom: 1px solid #cccccc;
+  position: relative;
+}
+/* Make the masthead heading the same height as the navigation */
+.header h3 {
+  margin-top: 0;
+  margin-bottom: 0;
+  line-height: 40px;
+  top: 0;
+  bottom: 0;
+  position: absolute;
+  opacity: 0;
+
+
+  /*animation-duration: 1s;
+  animation-name: slide-and-fadein;
+  animation-fill-mode: forwards;*/
+}
+
+.nav {
+  float: right;
+}
+
+/* Custom page footer */
+.footer {
+  padding-top: 19px;
+  color: #777777;
+  border-top: 1px solid #ccc;
+}
+
+/* Customize container */
+@media (min-width: 768px) {
+  .container {
+    max-width: 730px;
+  }
+}
+.container-narrow > hr {
+  margin: 30px 0;
+}
+
+/* Main marketing message and sign up button */
+.jumbotron {
+  text-align: center;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+/* Supporting marketing content */
+.feature-card {
+  margin-bottom: 20px;
+}
+.feature-card:last-child {
+  margin-bottom: 0;
+}
+
+/* primary titles */
+h1 {
+  font-weight: 300;
+}
+
+h3 {
+  color: #333333;
+}
+
+h3, h4 {
+  font-weight: 400;
+}
+
+.title-line {
+  position: relative;
+}
+.title-line > span {
+  background-color: #f1f1f1;
+  padding-right: 20px;
+}
+.title-line::before {
+  background-color: #cccccc;
+  height: 1px;
+  width: 100%;
+  content: '';
+  display: block;
+  top: 50%;
+  position: absolute;
+  z-index: -1;
+}
+
+/* Responsive: Portrait tablets and up */
+@media screen and (min-width: 768px) {
+  /* Remove the padding we set earlier */
+  .header,
+  .footer {
+    padding-right: 0;
+    padding-left: 0;
+  }
+  /* Space out the masthead */
+  .header {
+    margin-bottom: 30px;
+  }
+  /* Remove the bottom border on the jumbotron for visual effect */
+  .jumbotron {
+    border-bottom: 0;
+  }
+  
+  .jumbotron .btn {
+    padding: 14px 24px;
+    font-size: 21px;
+  }
+}
+
+/* Responsive: Phones and up */
+@media screen and (max-width: 767px) {
+  .heading {
+    padding-bottom: 10px;
+  }
+
+  .nav {
+    float: none;
+    margin-top: 45px;
+  }
+
+  .nav-pills > li > a {
+    padding: 5px 10px;
+    line-height: 1.1em;
+  }
+
+  /* Space out the masthead */
+  .header {
+    margin-bottom: 20px;
+  }
+}
+
+@-webkit-keyframes slide-and-fadein { from { transform: translate3d(0, -100%, 0); opacity: 0;} to { transform: translate3d(0, 0, 0); opacity: 1; } }
+   @-moz-keyframes slide-and-fadein { from { transform: translate3d(0, -100%, 0); opacity: 0;} to { transform: translate3d(0, 0, 0); opacity: 1; } }
+     @-o-keyframes slide-and-fadein { from { transform: translate3d(0, -100%, 0); opacity: 0;} to { transform: translate3d(0, 0, 0); opacity: 1; } }
+        @keyframes slide-and-fadein { from { transform: translate3d(0, -100%, 0); opacity: 0;} to { transform: translate3d(0, 0, 0); opacity: 1; } }
