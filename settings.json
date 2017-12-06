@@ -1,9 +1,0 @@
-{
-  "txFee": 0.001,
-  "minSend": 0.1,
-  "notifications": false,
-  "timeToRefreshTxs": 1,
-  "txStaleConfirmations": 3,
-  "timeToRefreshNotifications": 3,
-  "blockexplorerUrl": "http://obsidianblockchain2.westeurope.cloudapp.azure.com/"
-}
