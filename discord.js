@@ -202,7 +202,46 @@ client.on("message", async message => {
 
                       message.channel.send('beep-boop -- Starting the party!!!');
 
-                      Async.eachOf(members, (member, key, callback) => {
+                      let sendPartyTip = (_userId, _member, _addr, _amt) => {
+                        return new Promise((resolve, reject) => {
+                          console.log(`\n~ sendPartyTip ~`);
+                          console.log(`-address::${_addr}`);
+                          Tipbot.withdrawOdn(_userId, _addr, _amt)
+                          .then((Status) => {
+                            if (Status.status == 'success') {
+                              _member.createDM()
+                              .then((DMChannel) => {
+                                console.log('-send DM');
+                                DMChannel.send(`beep-boop -- ODN Tipbot here! You're going to be receiving ${_amt} ODN for the Obsidian Tipbot party, enjoy!`)
+                                .then((message) => {
+                                  console.log(`-DM sent`);
+                                  resolve(true);
+                                })
+                                .catch((err) => {
+                                  console.log(`-DM FAILED for ${_member.id} // ${_member.displayName}`);
+                                  resolve(false);
+                                });
+                              });
+                            }
+                            else {
+                              console.log(`ERR occurred, unable to send ODN to member:${_member.id}\n${Status.message}`);
+
+                              message.channel.send(`Unable to share the party with <@${member.id}>`);
+
+                              resolve(false);
+                            }
+                          })
+                          .catch((err) => {
+                            console.log(`ERR occurred, unable to send ODN to member:${_member.id}\n${Status.message}`);
+
+                            message.channel.send(`Unable to share the party with <@${_member.id}>`);
+
+                            resolve(false);
+                          });
+                        });
+                      };
+
+                      Async.mapSeries(members, (member, callback) => {
                         console.log(`---Party with: ${userName}`);
                         Tipbot.getOdnAddress(member.id)
                         .then((Address) => {
@@ -216,11 +255,14 @@ client.on("message", async message => {
                                 DMChannel.send(`beep-boop -- ODN Tipbot here! You're going to be receiving ${amount} ODN for the Obsidian Tipbot party, enjoy!`)
                                 .then((message) => {
                                   console.log(`-DM sent`);
-                                  callback();
+                                  setTimeout(()=> {
+                                    console.log('-next');
+                                    callback();
+                                  }, 700);
                                 })
                                 .catch((err) => {
                                   console.log(`-DM FAILED for ${member.id} // ${member.displayName}`);
-                                  callback();
+                                  callback(new Error(`-DM FAILED for ${member.id} // ${member.displayName}`));
                                 });
                               });
                             }
@@ -246,14 +288,13 @@ client.on("message", async message => {
 
                           callback(err);
                         })
-
-
-                      }, (err) => {
+                      }, (err, res) => {
                         if (err) {
                           console.log('error?');
                           console.log(err);
                         }
                         console.log('finished!');
+                        console.log(JSON.stringify(res));
                       });
                     });
                   });
