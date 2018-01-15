@@ -156,6 +156,12 @@ client.on("message", async message => {
         message.channel.send(Tipbot.errorMessage('Unable to withdraw ODN from your balance at this time.'));
       }
     }
+    else if (request === 'p') {
+      console.log('\n!!! P !!!');
+      let [request, amount] = args;
+
+
+    }
     else if (request === 'party') {
       console.log('\n!!! Tip.party !!!');
       let [request, amount] = args;
@@ -317,6 +323,12 @@ client.on("message", async message => {
       console.log('\n!!! Tip !!!');
 
       try {
+        if (args[1] === '💩') {
+          let discordUserID = message.mentions.users.first().id;
+          message.channel.send(`<@${discordUserID}> has been given one 💩 from <@${userId}>!\n\n*This tip has no monetary value and cannot be redeemed for something with actual worth!*`);
+          return true;
+        }
+        
         let amount        = parseFloat(args[1]);
         let comment       = args.slice(2).join(' ');
         let discordUserID = message.mentions.users.first().id;

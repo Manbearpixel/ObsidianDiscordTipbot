@@ -1,6 +1,6 @@
 {
   "name": "odn-tipbot",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Discord Tipbot for Obsidian",
   "main": "discord.js",
   "dependencies": {
