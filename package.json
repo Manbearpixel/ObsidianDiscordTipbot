@@ -13,7 +13,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "node discord.js",
     "start": "forever start ./forever/production.json",
-    "stop": "forever stop discord-tipbot",
+    "stop": "forever stop discord-tipbot"
   },
   "author": "",
   "license": "ISC"
