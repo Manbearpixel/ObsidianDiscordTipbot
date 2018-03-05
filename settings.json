@@ -5,5 +5,5 @@
   "timeToRefreshTxs": 1,
   "txStaleConfirmations": 3,
   "timeToRefreshNotifications": 3,
-  "blockexplorerUrl": "http://obsidianblockchain2.westeurope.cloudapp.azure.com/"
+  "blockexplorerUrl": "https://blockexplorer.obsidianplatform.com/"
 }

@@ -328,7 +328,12 @@ client.on("message", async message => {
           message.channel.send(`<@${discordUserID}> has been given one 💩 from <@${userId}>!\n\n*This tip has no monetary value and cannot be redeemed for something with actual worth!*`);
           return true;
         }
-        
+        else if (args[1] === '🐧') {
+          let discordUserID = message.mentions.users.first().id;
+          message.channel.send(`<@${discordUserID}> has been given one 🐧 from <@${userId}>!\n\n*This tip has no monetary value and cannot be redeemed for something with actual worth! Freaking sweet looking penguin though. *`);
+          return true;
+        }
+
         let amount        = parseFloat(args[1]);
         let comment       = args.slice(2).join(' ');
         let discordUserID = message.mentions.users.first().id;
